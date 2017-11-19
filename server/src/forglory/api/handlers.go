@@ -178,6 +178,7 @@ type getMatchResponseUser struct {
 	Rank     int    `json:"rank"`
 	Main     string `json:"main"`
 	Score    int    `json:"score"`
+	Slug     string `json:"slug"`
 }
 
 type getMatchResponse struct {
@@ -243,6 +244,7 @@ func GetMatchHandler(w http.ResponseWriter, r *http.Request) {
 			Rank:     userOneRank,
 			Main:     "falco",
 			Score:    match.UserOneScore,
+			Slug:     match.Slug,
 		},
 		UserTwo: getMatchResponseUser{
 			Id:       userTwo.UserId,
@@ -257,6 +259,7 @@ func GetMatchHandler(w http.ResponseWriter, r *http.Request) {
 			Rank:     userTwoRank,
 			Main:     "falco",
 			Score:    match.UserTwoScore,
+			Slug:     match.Slug,
 		},
 	}
 
@@ -365,6 +368,93 @@ func GetRanksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responseJson, err := json.Marshal(responseUsers)
+	if err != nil {
+		writeErrorResponse(w, 500, "23y8238979")
+		return
+	}
+
+	writeJsonResponse(w, 200, responseJson)
+}
+
+func GetMatchesHandler(w http.ResponseWriter, r *http.Request) {
+	matches, err := data.GetMatches()
+	if err != nil {
+		writeErrorResponse(w, 500, "couldnt get ranks: "+err.Error())
+		return
+	}
+
+	responseMatches := []getMatchResponse{}
+
+	for _, match := range matches {
+
+		userOne := &data.User{}
+		userTwo := &data.User{}
+
+		userOne.GetById(match.UserOne)
+		userTwo.GetById(match.UserTwo)
+
+		userOneRank, err := data.GetRanking(userOne.Elo)
+		if err != nil {
+			writeErrorResponse(w, 500, "error getting u1 rank"+err.Error())
+			return
+		}
+
+		userOneHistory := &data.GameHistory{}
+		err = userOneHistory.GetHistory(userOne.Id)
+		if err != nil {
+			writeErrorResponse(w, 500, "error getting u1 history"+err.Error())
+			return
+		}
+
+		userTwoRank, err := data.GetRanking(userTwo.Elo)
+		if err != nil {
+			writeErrorResponse(w, 500, "error getting u2 rank"+err.Error())
+			return
+		}
+
+		userTwoHistory := &data.GameHistory{}
+		err = userTwoHistory.GetHistory(userTwo.Id)
+		if err != nil {
+			writeErrorResponse(w, 500, "error getting u2 history"+err.Error())
+			return
+		}
+
+		responseMatch := getMatchResponse{
+			UserOne: getMatchResponseUser{
+				Id:       userOne.UserId,
+				Name:     userOne.Name,
+				RealName: userOne.RealName,
+				Picture:  userOne.Picture,
+				Elo:      userOne.Elo,
+				Wins:     userOneHistory.Wins,
+				Losses:   userOneHistory.Losses,
+				Draws:    userOneHistory.Draws,
+				Games:    userOneHistory.Games,
+				Rank:     userOneRank,
+				Main:     "falco",
+				Score:    match.UserOneScore,
+				Slug:     match.Slug,
+			},
+			UserTwo: getMatchResponseUser{
+				Id:       userTwo.UserId,
+				Name:     userTwo.Name,
+				RealName: userTwo.RealName,
+				Picture:  userTwo.Picture,
+				Elo:      userTwo.Elo,
+				Wins:     userTwoHistory.Wins,
+				Losses:   userTwoHistory.Losses,
+				Draws:    userTwoHistory.Draws,
+				Games:    userTwoHistory.Games,
+				Rank:     userTwoRank,
+				Main:     "falco",
+				Score:    match.UserTwoScore,
+				Slug:     match.Slug,
+			},
+		}
+		responseMatches = append(responseMatches, responseMatch)
+	}
+
+	responseJson, err := json.Marshal(responseMatches)
 	if err != nil {
 		writeErrorResponse(w, 500, "23y8238979")
 		return

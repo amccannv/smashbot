@@ -29,6 +29,7 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/match/{match}", addDefaultHeaders(GetMatchHandler))
 	router.HandleFunc("/user/{username}", addDefaultHeaders(GetUserHandler))
 	router.HandleFunc("/ranking", addDefaultHeaders(GetRanksHandler))
+	router.HandleFunc("/matches", addDefaultHeaders(GetMatchesHandler))
 
 	return router
 }

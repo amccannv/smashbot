@@ -140,3 +140,30 @@ func (match *Match) Update() (wasUpdated bool, err error) {
 
 	return true, nil
 }
+
+func GetMatches() ([]*Match, error) {
+	matches := []*Match{}
+
+	db := DB
+
+	sql := `SELECT
+			id,
+			slug,
+			player_one,
+			player_two,
+			player_one_score,
+			player_two_score,
+			player_one_elo_change,
+			player_two_elo_change
+		FROM
+			game
+		ORDER BY id DESC`
+
+	err := db.Select(&matches, sql)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return matches, nil
+}
