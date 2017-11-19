@@ -61,6 +61,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 			Name:     reportDetails.UserOne.Name,
 			RealName: reportDetails.UserOne.RealName,
 			Picture:  reportDetails.UserOne.Picture,
+			Main:     "falco",
 			Elo:      1000,
 		}
 
@@ -80,6 +81,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 			Name:     reportDetails.UserTwo.Name,
 			RealName: reportDetails.UserTwo.RealName,
 			Picture:  reportDetails.UserTwo.Picture,
+			Main:     "falco",
 			Elo:      1000,
 		}
 
@@ -97,10 +99,10 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 		winner = ""
 		result = 3
 	} else if reportDetails.UserOne.Score > reportDetails.UserTwo.Score {
-		winner = userOne.Name
+		winner = userOne.RealName
 		result = 1
 	} else {
-		winner = userTwo.Name
+		winner = userTwo.RealName
 		result = 2
 	}
 
@@ -139,18 +141,18 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 	response := &reportResponse{
 		UserOne: reportResponseUser{
 			Id:        userOne.UserId,
-			Name:      userOne.Name,
+			Name:      userOne.RealName,
 			Elo:       userOne.Elo,
 			EloChange: userOneChange,
 		},
 		UserTwo: reportResponseUser{
 			Id:        userTwo.UserId,
-			Name:      userTwo.Name,
+			Name:      userTwo.RealName,
 			Elo:       userTwo.Elo,
 			EloChange: userTwoChange,
 		},
 		Result: reportResponseResult{
-			Url:    buildLink("/" + string(match.Slug)),
+			Url:    buildLink("/game/" + string(match.Slug)),
 			Winner: winner,
 		},
 	}
@@ -229,7 +231,6 @@ func GetMatchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: main
 	response := &getMatchResponse{
 		UserOne: getMatchResponseUser{
 			Id:       userOne.UserId,
@@ -242,7 +243,7 @@ func GetMatchHandler(w http.ResponseWriter, r *http.Request) {
 			Draws:    userOneHistory.Draws,
 			Games:    userOneHistory.Games,
 			Rank:     userOneRank,
-			Main:     "falco",
+			Main:     userOne.Main,
 			Score:    match.UserOneScore,
 			Slug:     match.Slug,
 		},
@@ -257,7 +258,7 @@ func GetMatchHandler(w http.ResponseWriter, r *http.Request) {
 			Draws:    userTwoHistory.Draws,
 			Games:    userTwoHistory.Games,
 			Rank:     userTwoRank,
-			Main:     "falco",
+			Main:     userTwo.Main,
 			Score:    match.UserTwoScore,
 			Slug:     match.Slug,
 		},
@@ -322,7 +323,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 		Draws:    userHistory.Draws,
 		Games:    userHistory.Games,
 		Rank:     rank,
-		Main:     "falco",
+		Main:     user.Main,
 	}
 
 	responseJson, err := json.Marshal(response)
@@ -362,7 +363,7 @@ func GetRanksHandler(w http.ResponseWriter, r *http.Request) {
 			Draws:    userHistory.Draws,
 			Games:    userHistory.Games,
 			Rank:     rank + 1,
-			Main:     "falco",
+			Main:     user.Main,
 		}
 		responseUsers = append(responseUsers, responseUser)
 	}
@@ -431,7 +432,7 @@ func GetMatchesHandler(w http.ResponseWriter, r *http.Request) {
 				Draws:    userOneHistory.Draws,
 				Games:    userOneHistory.Games,
 				Rank:     userOneRank,
-				Main:     "falco",
+				Main:     userOne.Main,
 				Score:    match.UserOneScore,
 				Slug:     match.Slug,
 			},
@@ -446,7 +447,7 @@ func GetMatchesHandler(w http.ResponseWriter, r *http.Request) {
 				Draws:    userTwoHistory.Draws,
 				Games:    userTwoHistory.Games,
 				Rank:     userTwoRank,
-				Main:     "falco",
+				Main:     userTwo.Main,
 				Score:    match.UserTwoScore,
 				Slug:     match.Slug,
 			},
@@ -461,4 +462,17 @@ func GetMatchesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJsonResponse(w, 200, responseJson)
+}
+
+func ChangeMainHandler(w http.ResponseWriter, r *http.Request) {
+	id := urlParamAsString(r, "id")
+	character := urlParamAsString(r, "character")
+
+	user := &data.User{}
+
+	err := user.GetByColumn("user_id", id)
+	if err == nil {
+		user.Main = character
+		user.Update()
+	}
 }

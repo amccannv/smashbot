@@ -13,6 +13,7 @@ CREATE TABLE `user`
 	`real_name` VARCHAR(255) NOT NULL,
 	`picture` VARCHAR(255) NOT NULL,
 	`community_id` INT NOT NULL,
+	`main` VARCHAR(255) NOT NULL DEFAULT "falco",
 	`elo` INT NOT NULL DEFAULT 1000,
 	PRIMARY KEY PK_USER (id)
 );

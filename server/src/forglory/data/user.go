@@ -9,6 +9,7 @@ type User struct {
 	Id       int    `db:"id"`
 	UserId   string `db:"user_id"`
 	Name     string `db:"name"`
+	Main     string `db:"main"`
 	RealName string `db:"real_name"`
 	Picture  string `db:"picture"`
 	Elo      int    `db:"elo"`
@@ -21,6 +22,7 @@ func (user *User) GetById(id int) error {
 			id,
 			user_id,
 			name,
+			main,
 			real_name,
 			picture,
 			elo
@@ -45,6 +47,7 @@ func (user *User) GetByUserId(userId int) error {
 			id,
 			user_id,
 			name,
+			main,
 			real_name,
 			picture,
 			elo
@@ -69,6 +72,7 @@ func (user *User) GetByColumn(columnName string, columnValue interface{}) error 
 			id,
 			user_id,
 			name,
+			main,
 			real_name,
 			picture,
 			elo
@@ -93,6 +97,7 @@ func (user *User) Create() (int, error) {
 		(
 			user_id,
 			name,
+			main,
 			real_name,
 			picture,
 			elo,
@@ -102,6 +107,7 @@ func (user *User) Create() (int, error) {
 		(
 			:user_id,
 			:name,
+			:main,
 			:real_name,
 			:picture,
 			:elo,
@@ -132,6 +138,7 @@ func (user *User) Update() (wasUpdated bool, err error) {
 			user
 		SET
 			name = :name,
+			main = :main,
 			real_name = :real_name,
 			picture = :picture,
 			elo = :elo
@@ -202,6 +209,7 @@ func GetRanks() ([]*User, error) {
 			id,
 			user_id,
 			name,
+			main,
 			real_name,
 			picture,
 			elo
