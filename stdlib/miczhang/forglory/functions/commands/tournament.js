@@ -1,4 +1,6 @@
 const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+const ephemeral = require('../../utils/ephemeral.js');
+
 
 /**
 * /tournament
@@ -17,10 +19,43 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 * @returns {object}
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
-
-  callback(null, {
-    response_type: 'in_channel',
-    text: `Hello, <@${user}>. Let's make a tournament! Here are the list of possible commands: \n /setppllimit \n /settimelimit \n /closereg`
-  });
-
+  var displayTxt = "Want to compete?";
+  var fall = "If you could read this message, you'd be choosing something fun to do right now";
+  var color = "#3AA3E3";
+  var buttonTxt = "I'm in!";
+  var type = "button";
+  var atType = "default";
+  var callbackID = "game_selection";
+  var nameButton = "competitiors";
+  var value = "value";
+  ephemeral(
+    botToken,
+    channel,
+    user,
+    {
+      type: 'ephemeral',
+      text: `Hello, <@${user}>. Let's make a tournament! Your registration is now live. To close it, please type '/closereg'`
+    }, (err, result) => {
+      if (err) {
+        return callback(err);
+      }
+      return callback(null, {
+        text: displayTxt,
+        attachments: [{
+        fallback: fall,
+        color: color,
+        attachment_type: atType,
+        callback_id: callbackID,
+        actions:[
+          {
+            name: nameButton,
+            text: buttonTxt,
+            type: type,
+            value: value
+          }
+        ]
+      }]
+      });
+    }
+  )
 };
