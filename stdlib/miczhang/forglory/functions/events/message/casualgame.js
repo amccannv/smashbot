@@ -23,6 +23,7 @@ module.exports = (user, channel, text = '', event = {}, botToken = null, callbac
     callback(null, {
         text: `Who wants to play with <@${user}>?`,
         attachments: [{
+            text: 'Try hitting this endpoint again by clicking the button!',
             fallback: 'Can\'t display attachment',
             callback_id: 'callback_id',
             actions: [
@@ -34,9 +35,9 @@ module.exports = (user, channel, text = '', event = {}, botToken = null, callbac
                 }
             ]
         }]
-    });
+    })
   } else {
-    return callback(null, {});
+    callback(null, {});
   }
 
 };

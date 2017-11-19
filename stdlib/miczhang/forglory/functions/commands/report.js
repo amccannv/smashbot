@@ -17,28 +17,38 @@ const message = require('../../utils/message.js');
 * @param {string} text The text contents of the command
 * @param {object} command The full Slack command object
 * @param {string} botToken The bot token for the Slack bot you have activated
-* @returns {string}
+* @returns {object}
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
-  ephemeral(
+    userTemp = user;
+    var res = text.split(" ", 3);
+    res[0] = res[0].substring(1)
+    user = {display_name: res[0]};
+    ephemeral(
       botToken,
       channel,
       user,
       {
         type: 'ephemeral',
-        text: `Who would you like to Smash today?`,
+        //text: `Wow looks like ` + res[0] + ` won ` + res[2] ` to ` + res[1] + `, is this correct?`,
+        text: `Wow looks like the results are ${text}, is this correct?`,
         attachments: [{
-            text: "Choose your victim",
             fallback: "If you could read this message, you'd be choosing something fun to do right now.",
             color: "#3AA3E3",
             attachment_type: "default",
             callback_id: "opponent_selection",
             actions: [
                 {
-                    name: 'challenged',
-                    text: "Victim of Choice",
-                    type: "select",
-                    data_source: "users",
+                    name: 'confirm',
+                    text: "Confirm",
+                    type: "button",
+                    value: res
+                },
+                {
+                    name: 'reject',
+                    text: "Contest",
+                    type: "button",
+                    value: userTemp
                 }
             ]
         }]
@@ -46,7 +56,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           if (err) {
               return callback(err);
           }
-          return callback(null, "");
+          return callback(null, {});
       }
   ) 
 };
