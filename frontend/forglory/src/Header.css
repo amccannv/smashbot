@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:700');
+
+.landingContainer {
+  display: flex;
+  flex-direction: column;
+  background: #cb2d3e;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #ef473a, #cb2d3e);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #ef473a, #cb2d3e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+  background: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 10vh;
+  overflow: hidden;
+  font-family: 'Lato';
+  font-weight: 700;
+  font-size: 200;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  animation: float 5s infinite;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh;
+  width: 15vw;
+}
+
+.logoPicture {
+  max-width: 100%;
+  max-height: 100%;
+  margin-left: 30px;
+}
+
+.linksNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 30px;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    display: block;
+    color: #111111;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #efefef;
+    color: black;
+}
