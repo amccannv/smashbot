@@ -2,6 +2,7 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 
 const getBotToken = require('../../helpers/get_bot_token.js');
 const update = require('../../utils/update_message.js');
+const message = require('../../utils/message.js');
 
 /**
  * Slack Actions (Interactive Messages) Response Handler
@@ -70,6 +71,7 @@ module.exports = (context, callback) => {
         botToken: botToken
       },
       (err, result) => {
+        console.log('done with action handler', err, result);
         if (err) {
           if (result && result.error && result.error.type === 'ClientError') {
             callback(err);
@@ -85,6 +87,7 @@ module.exports = (context, callback) => {
             );
           }
         } else {
+          console.log('about to update');
           update(
             botToken,
             action.channel.id,

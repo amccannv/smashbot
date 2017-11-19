@@ -1,4 +1,5 @@
 const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+const message = require('../../utils/message.js');
 
 /**
 * example.js
@@ -16,25 +17,34 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 * @param {string} botToken The bot token for the Slack bot you have activated
 * @returns {object}
 */
+
 module.exports = (user, channel, action = {}, botToken = null, callback) => {
-
   // Slack does not permit array parameters to be passed in normally -- you must
-  // convert them into strings.
-  callback(null, {
-    text: `Hello, <@${user}>!\nThis text will overwrite the original interactive message`,
-    attachments: [{
-      text: 'Try hitting this endpoint again by clicking the button!',
-      fallback: 'Can\'t display attachment',
-      callback_id: 'callback_id',
-      actions: [
-        {
-          name: 'example',
-          text: 'Refresh',
-          type: 'button',
-          value: 'value'
-        }
-      ]
-    }]
-  });
-
+  // convert them into strings.  
+  message(
+    botToken,
+    user,
+    {
+      text: `Get ready to fight and good luck!`,
+    }, (err, result) => {
+      if (err) {
+          return callback(err);
+      }
+      return callback(null, {});
+  }
+  );
+  
+  message(
+    botToken,
+    action.actions[0].value,
+    {
+      text: `<@${user}>  has accepted your challenge! Good luck!`
+    
+  }, (err, result) => {
+    if (err) {
+        return callback(err);
+    }
+    return callback(null, {});
+  }
+  );
 };

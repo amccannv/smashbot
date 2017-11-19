@@ -1,4 +1,5 @@
 const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+const ephemeral = require('../../utils/ephemeral.js');
 
 /**
 * /top
@@ -18,8 +19,18 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
 
-  callback(null, {
-    response_type: 'in_channel',
+  ephemeral(
+    botToken,
+    channel, 
+    user,
+     {
+    response_type: 'ephemeral',
     text: `Here are the current top 10 rankings. Please retype this command with a number if you want that number of top players.`
-  });
+    }, (err, result) => {
+      if (err) {
+          return callback(err);
+      }
+      return callback(null, {});
+  }
+  )
 };

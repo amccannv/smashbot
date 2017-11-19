@@ -1,4 +1,5 @@
 const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+const ephemeral = require('../../utils/ephemeral.js');
 
 /**
 * /glory
@@ -18,9 +19,18 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
 
-  callback(null, {
-    response_type: 'in_channel',
-    text: `Hello, <@${user}>. Here are the list of possible commands! \n /challenge \n /report \n /tournament \n /top \n /casualgame`
-  });
+  ephemeral(
+    botToken,
+    channel, 
+    user,
+     {
+       type: ephemeral,
+       text: `Hello, <@${user}>. Here are the list of possible commands! \n /challenge \n /report \n /tournament \n /top \n/main \n You can also create a game in any channel by mentioning the words \'smash\', \'play\', or \'game\'`
+     }, (err, result) => {
+      if (err) {
+          return callback(err);
+      }
+      return callback(null, {});
+  })
 
 };
