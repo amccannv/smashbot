@@ -1,21 +1,15 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom'
+import Rankings from './Rankings';
+import Game from './Game';
+import GameList from './GameList';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
+const App = () => (
+  <Switch>
+    <Route exact path='/' component={GameList}/>
+    <Route exact path='/game/:number' component={Game}/>
+    <Route path='/rankings' component={Rankings}/>
+  </Switch>
+)
 
-export default App;
+export default App
